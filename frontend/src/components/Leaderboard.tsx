@@ -116,7 +116,7 @@ const Leaderboard = () => {
       style={{ color: systemTheme.text.primary }}
     >
       <h2 className="text-center text-2xl font-bold">Top Performers</h2>
-      <ScrollableContainer>
+      <ScrollableContainer theme={systemTheme}>
         {leaderboardData.slice(0, 3).map((entry, index) => (
           <TopEntry key={index} rank={index + 1}>
             <div className="flex items-center gap-4">
@@ -176,7 +176,7 @@ const TopEntry = styled.div<{ rank: number }>`
   padding: 1rem;
   margin-bottom: 0.5rem;
   border-radius: 0.5rem;
-  background: ${({ theme, rank }) =>
+  background: ${({ rank }) =>
     rank === 1
       ? "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)"
       : rank === 2

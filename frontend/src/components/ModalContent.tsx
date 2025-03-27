@@ -1,10 +1,6 @@
 import { useState } from "react";
-import styled from "styled-components";
-
 import { useThemeContext } from "../hooks/useTheme";
-
 import ResultCard from "./ResultCard";
-
 import type { Results } from "../types";
 import type { HistoryType } from "../types";
 
