@@ -25,7 +25,6 @@ function App() {
   const {
     charTyped,
     countdown,
-    cursorPosition,
     modalIsOpen,
     results,
     time,
@@ -36,7 +35,6 @@ function App() {
     setTime,
     resetCountdown,
     setLocalStorageValue,
-    updateWord,
     restartTest,
     checkCharacter,
     closeModal,

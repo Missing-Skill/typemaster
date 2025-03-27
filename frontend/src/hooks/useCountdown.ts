@@ -1,32 +1,40 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-export const useCountdown = (initialValue: number, interval = 1000) => {
-  const intervalRef = useRef<NodeJS.Timer | null>(null);
-  const [countdown, setCountdown] = useState(initialValue);
+export const useCountdown = (initialTime: number) => {
+  const [countdown, setCountdown] = useState(initialTime);
+  const intervalRef = useRef<number | null>(null);
 
-  const startCountdown = useCallback(() => {
-    if (intervalRef.current) return;
-    intervalRef.current = setInterval(() => {
+  const startCountdown = () => {
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+    }
+    intervalRef.current = window.setInterval(() => {
       setCountdown((prev) => {
-        if (prev > 0) {
-          return prev - interval;
+        if (prev <= 1) {
+          if (intervalRef.current) {
+            window.clearInterval(intervalRef.current);
+          }
+          return 0;
         }
-        if (prev === 0) clearInterval(intervalRef.current!);
-
-        return prev;
+        return prev - 1;
       });
-    }, interval);
-  }, [initialValue]);
+    }, 1000);
+  };
 
-  const resetCountdown = useCallback(() => {
-    clearInterval(intervalRef.current!);
-    intervalRef.current = null;
-    setCountdown(initialValue);
-  }, [initialValue]);
+  const resetCountdown = () => {
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+    }
+    setCountdown(initialTime);
+  };
 
   useEffect(() => {
-    return () => clearInterval(intervalRef.current!);
-  }, [interval]);
+    return () => {
+      if (intervalRef.current) {
+        window.clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   return { countdown, startCountdown, resetCountdown };
 };

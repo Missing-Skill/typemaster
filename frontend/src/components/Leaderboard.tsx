@@ -12,12 +12,12 @@ type LeaderboardEntry = {
 };
 
 const Leaderboard = () => {
+  const { systemTheme } = useThemeContext();
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { systemTheme } = useThemeContext();
 
   useEffect(() => {
     const fetchLeaderboard = async () => {

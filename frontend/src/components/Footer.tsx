@@ -1,9 +1,14 @@
-import styled from "styled-components";
+import { useThemeContext } from "../hooks/useTheme";
 
 const Footer = () => {
+  const { systemTheme } = useThemeContext();
+
   return (
-    <footer className="mb-3 mt-auto">
-      <div className="flex items-center justify-center"></div>
+    <footer
+      className="mt-auto py-4 text-center"
+      style={{ color: systemTheme.text.secondary }}
+    >
+      <p>© 2024 Typing Game. All rights reserved.</p>
     </footer>
   );
 };
