@@ -23,7 +23,9 @@ const Leaderboard = () => {
     const fetchLeaderboard = async () => {
       try {
         console.log("Fetching leaderboard data...");
-        const response = await fetch("http://localhost:5000/api/results");
+        const response = await fetch(
+          "http://typemaster-production.up.railway.app/api/results"
+        );
         console.log("Response status:", response.status);
 
         if (!response.ok) {

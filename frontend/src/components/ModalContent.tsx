@@ -22,24 +22,27 @@ const ModalContent = ({ totalTime, history, results }: ModalContentProps) => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/results", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          usn,
-          results: {
-            wpm: results.wpm,
-            cpm: results.cpm,
-            accuracy: Math.round(results.accuracy),
-            error: Math.round(results.error),
-            totalTime: totalTime / 1000,
-            totalCharacters: history.typedHistory.length,
+      const response = await fetch(
+        "http://typemaster-production.up.railway.app/api/results",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            name,
+            usn,
+            results: {
+              wpm: results.wpm,
+              cpm: results.cpm,
+              accuracy: Math.round(results.accuracy),
+              error: Math.round(results.error),
+              totalTime: totalTime / 1000,
+              totalCharacters: history.typedHistory.length,
+            },
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit results");
