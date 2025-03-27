@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useThemeContext } from "../hooks/useTheme";
+import { api } from "../services/api";
 
 type LeaderboardEntry = {
   name: string;
@@ -23,18 +24,7 @@ const Leaderboard = () => {
     const fetchLeaderboard = async () => {
       try {
         console.log("Fetching leaderboard data...");
-        const response = await fetch(
-          "http://typemaster-production.up.railway.app/api/results"
-        );
-        console.log("Response status:", response.status);
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch leaderboard data: ${response.status}`
-          );
-        }
-
-        const data = await response.json();
+        const data = await api.getResults();
         console.log("Received data:", data);
 
         if (!Array.isArray(data)) {
@@ -57,13 +47,21 @@ const Leaderboard = () => {
 
         console.log("Sorted data:", sortedData);
         setLeaderboardData(sortedData);
-      } catch (err) {
-        console.error("Error fetching leaderboard:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "An error occurred while fetching the leaderboard"
-        );
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+        if (error instanceof Error) {
+          if (error.message.includes("Network error")) {
+            setError(
+              "Unable to connect to the server. Please check your internet connection and try again."
+            );
+          } else if (error.message.includes("timeout")) {
+            setError("Request timed out. Please try again.");
+          } else {
+            setError(error.message);
+          }
+        } else {
+          setError("An error occurred while fetching the leaderboard");
+        }
       } finally {
         setLoading(false);
       }

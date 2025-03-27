@@ -3,6 +3,7 @@ import { useThemeContext } from "../hooks/useTheme";
 import ResultCard from "./ResultCard";
 import type { Results } from "../types";
 import type { HistoryType } from "../types";
+import { api } from "../services/api";
 
 type ModalContentProps = {
   totalTime: number;
@@ -16,44 +17,49 @@ const ModalContent = ({ totalTime, history, results }: ModalContentProps) => {
   const [usn, setUsn] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        "http://typemaster-production.up.railway.app/api/results",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            usn,
-            results: {
-              wpm: results.wpm,
-              cpm: results.cpm,
-              accuracy: Math.round(results.accuracy),
-              error: Math.round(results.error),
-              totalTime: totalTime / 1000,
-              totalCharacters: history.typedHistory.length,
-            },
-          }),
-        }
-      );
+      const resultData = {
+        name,
+        usn,
+        results: {
+          wpm: results.wpm,
+          cpm: results.cpm,
+          accuracy: Math.round(results.accuracy),
+          error: Math.round(results.error),
+          totalTime: totalTime / 1000,
+          totalCharacters: history.typedHistory.length,
+        },
+      };
 
-      if (!response.ok) {
-        throw new Error("Failed to submit results");
-      }
-
-      const data = await response.json();
-      console.log("Results submitted successfully:", data);
+      console.log("Submitting result data:", resultData);
+      await api.saveResult(resultData);
       setSubmitted(true);
-    } catch (err) {
-      console.error("Error submitting results:", err);
-      setError("Failed to submit results. Please try again.");
+    } catch (error: unknown) {
+      console.error("Error submitting results:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to submit results. Please try again.";
+
+      // Show more specific error messages
+      if (errorMessage.includes("Network error")) {
+        setError(
+          "Unable to connect to the server. Please check your internet connection and try again."
+        );
+      } else if (errorMessage.includes("timeout")) {
+        setError("Request timed out. Please try again.");
+      } else {
+        setError(errorMessage);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,7 +75,7 @@ const ModalContent = ({ totalTime, history, results }: ModalContentProps) => {
           <h2 className="text-xl lg:text-2xl">test results</h2>
         </div>
 
-        <div className=" grid grid-flow-col grid-rows-6 justify-center gap-4 sm:grid-rows-4 sm:justify-normal lg:grid-rows-2 lg:justify-normal lg:gap-10 ">
+        <div className="grid grid-flow-col grid-rows-6 justify-center gap-4 sm:grid-rows-4 sm:justify-normal lg:grid-rows-2 lg:justify-normal lg:gap-10">
           <ResultCard
             title="wpm/cpm"
             tooltipId="wpm"
@@ -148,16 +154,21 @@ const ModalContent = ({ totalTime, history, results }: ModalContentProps) => {
                 style={{ backgroundColor: systemTheme.background.primary }}
               />
             </div>
-            {error && <p className="text-red-500">{error}</p>}
+            {error && (
+              <div className="rounded-lg bg-red-500 bg-opacity-20 p-3 text-red-500">
+                {error}
+              </div>
+            )}
             <button
               type="submit"
-              className="mt-2 rounded px-4 py-2 font-semibold"
+              disabled={isSubmitting}
+              className="mt-2 rounded px-4 py-2 font-semibold disabled:opacity-50"
               style={{
                 backgroundColor: systemTheme.text.primary,
                 color: systemTheme.background.primary,
               }}
             >
-              Submit
+              {isSubmitting ? "Submitting..." : "Submit"}
             </button>
           </form>
         </div>
