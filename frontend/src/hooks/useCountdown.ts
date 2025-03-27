@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export const useCountdown = (initialTime: number) => {
-  const [countdown, setCountdown] = useState(initialTime);
+  const [countdown, setCountdown] = useState(initialTime / 1000); // Convert milliseconds to seconds
   const intervalRef = useRef<number | null>(null);
 
   const startCountdown = () => {
@@ -25,7 +25,7 @@ export const useCountdown = (initialTime: number) => {
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
     }
-    setCountdown(initialTime);
+    setCountdown(initialTime / 1000); // Convert milliseconds to seconds
   };
 
   useEffect(() => {

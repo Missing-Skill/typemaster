@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
-
-import { useThemeContext } from '../hooks/useTheme';
+import { useThemeContext } from "../hooks/useTheme";
 
 type CountdownProps = {
   countdown: number;
@@ -8,38 +6,27 @@ type CountdownProps = {
 };
 
 const Countdown = ({ countdown, reset }: CountdownProps) => {
-  useEffect(() => {
-    reset();
-  }, [reset]);
-
-  const formatedCountdown = {
-    minutes: new Date(countdown).getUTCMinutes(),
-    seconds: new Date(countdown).getUTCSeconds(),
-  };
-
   const { systemTheme } = useThemeContext();
 
+  const minutes = Math.floor(countdown / 60);
+  const seconds = countdown % 60;
+
   return (
-    <div className='flex justify-end'>
+    <div className="flex justify-end">
       <div
-        className=' rounded-lg p-3'
+        className="rounded-lg p-3"
         style={{
           backgroundColor: systemTheme.background.secondary,
         }}
       >
         <span
-          className='text-right font-mono text-lg lg:text-xl'
+          className="text-right font-mono text-lg lg:text-xl"
           style={{
             color: systemTheme.text.secondary,
           }}
         >
-          {formatedCountdown.minutes < 10
-            ? `0${formatedCountdown.minutes}`
-            : formatedCountdown.minutes}
-          :
-          {formatedCountdown.seconds < 10
-            ? `0${formatedCountdown.seconds}`
-            : formatedCountdown.seconds}
+          {minutes < 10 ? `0${minutes}` : minutes}:
+          {seconds < 10 ? `0${seconds}` : seconds}
         </span>
       </div>
     </div>
