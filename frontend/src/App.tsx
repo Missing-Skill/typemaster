@@ -79,7 +79,7 @@ function App() {
               setTime={setTime}
               restart={restartTest}
             />
-            <Countdown countdown={countdown} reset={resetCountdown} />
+            <Countdown countdown={countdown} />
             <WordWrapper
               focused={wordContainerFocused}
               setFocused={setWordContainerFocused}

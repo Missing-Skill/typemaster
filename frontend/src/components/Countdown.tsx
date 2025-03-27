@@ -2,10 +2,9 @@ import { useThemeContext } from "../hooks/useTheme";
 
 type CountdownProps = {
   countdown: number;
-  reset: () => void;
 };
 
-const Countdown = ({ countdown, reset }: CountdownProps) => {
+const Countdown = ({ countdown }: CountdownProps) => {
   const { systemTheme } = useThemeContext();
 
   const minutes = Math.floor(countdown / 60);
