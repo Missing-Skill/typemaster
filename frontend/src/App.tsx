@@ -33,7 +33,6 @@ function App() {
     wordContainerFocused,
     setWordContainerFocused,
     setTime,
-    resetCountdown,
     setLocalStorageValue,
     restartTest,
     checkCharacter,
